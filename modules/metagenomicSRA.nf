@@ -143,6 +143,7 @@ process bowtie2 {
 
   input:
     tuple val(sample), path(readsFastq)
+    val databaseRootName
 
   output:
     tuple val(sample), path("numReads.txt"), path("alignments*.sam")
@@ -236,7 +237,7 @@ workflow metagenomicSRA {
     ids = Channel.fromList( accessions )
     sample_reads = downloadFiles( ids )
 
-    sample_numReads_alignments = bowtie2( sample_reads )
+    sample_numReads_alignments = bowtie2( sample_reads, params.databaseRootName )
     xs = postAlign( sample_numReads_alignments,  params.markerToTaxonPath )
     makeTsv(xs.collect())
 
